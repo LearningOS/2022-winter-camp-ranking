@@ -437,6 +437,7 @@ const RankList = (props: IRankListProps) => {
           dataSource={dataSource}
           columns={columns}
           size="middle"
+          pagination={{pageSize: 20}}
         />
       )}
     </>

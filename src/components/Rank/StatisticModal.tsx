@@ -76,6 +76,14 @@ const StatisticModal = (props: IProps) => {
   ]
 
   const dataSource = map(props.classroom?.assignments, (assignment, index) => {
+    assignment.student_repositories = assignment.student_repositories.filter((homework) => {
+      const startTime = new Date('2022-10-1').getTime();
+      if (homework.latestUpdatedAt) {
+        const date = new Date(homework.latestUpdatedAt.replace('T', ' ')).getTime();;
+        if(date > startTime) return true;
+      }
+      return false;
+    });
     const B = assignment.student_repositories.length
     const A = assignment.student_repositories.filter((repo) => repo.isSuccess).length
     const C = assignment.student_repositories.filter(

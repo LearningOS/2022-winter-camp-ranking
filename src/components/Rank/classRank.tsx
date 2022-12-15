@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Table, Progress, Modal } from 'antd'
 import dayjs from 'dayjs'
-import { orderBy, map, groupBy, keys, flatMap } from 'lodash'
+import { orderBy, map, groupBy, keys, flatMap, filter } from 'lodash'
 import Icon from '../../components/Icon'
 import type { ColumnsType } from 'antd/lib/table'
 import type { TClassroom, TAssignment, TStudentHomework } from './types'
@@ -109,8 +109,20 @@ const ClassRoomRank = (props: IProps) => {
   )
 
   let dataSource: IDatasource[] = useMemo(() => {
-    const studentHomeworkds = flatMap(map(props.classroom?.assignments, 'student_repositories'))
-    const studentGroups = groupBy(studentHomeworkds, 'name')
+    const startTime = new Date('2022-10-1').getTime();
+    let studentHomeworkds = flatMap(map(props.classroom?.assignments, 'student_repositories'))
+
+    studentHomeworkds = studentHomeworkds.filter((homework) => {
+      if (homework.latestUpdatedAt) {
+        const date = new Date(homework.latestUpdatedAt.replace('T', ' ')).getTime();;
+        if(date > startTime) return true;
+      }
+
+      return false;
+    })
+
+    let studentGroups = groupBy(studentHomeworkds, 'name')
+
     const studentAchievement = map(keys(studentGroups), (studentName) => {
       const homeworks = studentGroups[studentName]
       const totalScore = homeworks.reduce((total, homework) => {
