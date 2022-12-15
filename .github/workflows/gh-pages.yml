@@ -55,6 +55,10 @@ jobs:
         uses: actions/setup-node@v3.0.0
         with:
           node-version: '16.x'
+      - name: install pkg
+        run: |
+          npm install yarn -g
+          yarn install
       - name: build pages
         run: yarn build
       - name: save data files
